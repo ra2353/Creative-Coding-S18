@@ -1,0 +1,223 @@
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+ 
+Minim minim;
+AudioPlayer note1,note2,note3,note4,note5,note6,note7,note8,note9,note10;
+
+AudioPlayer kick;
+AudioPlayer groove; 
+FFT fft;
+float newposx;
+float tempo;
+int lastMillis;
+int colCounter;
+
+circlenotes[] CirclenotesArray = new circlenotes[0];
+
+void setup()
+{
+  size(1600,800);
+  
+  lastMillis = millis();
+  colCounter = -1;
+
+  minim = new Minim(this);
+
+ 
+  note1 = minim.loadFile("note1.mp3");
+  note2 = minim.loadFile("note2.mp3");
+  note3 = minim.loadFile("note3.mp3");
+  note4 = minim.loadFile("note4.mp3");
+  note5 = minim.loadFile("note5.mp3");
+  note6 = minim.loadFile("note6.mp3");
+  note7 = minim.loadFile("note7.mp3");
+  note8 = minim.loadFile("note8.mp3");
+  note9 = minim.loadFile("note9.mp3");
+  note10 = minim.loadFile("note10.mp3");
+  //kick=minim.loadFile("kick.wav");
+  groove=minim.loadFile("groove.mp3");
+
+  //fft = new FFT(note1.bufferSize(), note1.sampleRate());
+  //fft = new FFT(note10.bufferSize(), note10.sampleRate());
+  //note10.loop();
+  
+  
+  //fft = new FFT(note9.bufferSize(), note9.sampleRate());
+  //note9.loop();
+  
+  //  fft = new FFT(note1.bufferSize(), note1.sampleRate());
+  //note3.loop();
+  //note2.loop();
+
+
+
+  background(0);
+
+
+//  kick.play(0);
+//  kick.loop();
+}
+ 
+void draw(){
+  int m = millis();
+  //print(m);
+ // print("\n");
+  
+  
+  background(0);
+  //fft.forward(note10.mix);
+
+  //for(int i = 1; i < fft.specSize(); i++){
+  //  float bandValue = fft.getBand(i);
+  //  fill(random(150,200),random(150,200),random(150,200));
+  //  ellipse(random(width), random(height), (bandValue*5), (bandValue*5));
+  //  ellipse(random(width), random(height), (bandValue*5), (bandValue*5));  
+  //}
+    
+  fill(30);
+  rect(width/7.5,height/7.5,width*.7,height*.7);
+  fill(255);
+
+  float positionx=0;
+  float positiony=175;
+
+  for (int i=0;i<100;i++){
+    positionx+=35;
+   
+    if ((i%10)==0){
+       positiony+=35;
+       positionx=0;
+    }
+    
+   circlenotes c  = new circlenotes();
+   CirclenotesArray =(circlenotes[])append(CirclenotesArray, c);
+   newposx=positionx+width/6+50;
+   CirclenotesArray[i].makecircle(newposx,positiony);
+  }
+  
+ 
+  
+  if (m - lastMillis >= 400) {
+    lastMillis = m;
+    //print(lastMillis);
+    //print("\n");
+    colCounter++;
+   if (colCounter == 10) {
+     colCounter = 0;
+   }
+   for (int i = 0; i < CirclenotesArray.length; i++) {
+     
+     if (colCounter % 10 == 0) {
+       playColumn(CirclenotesArray, colCounter);
+     }
+     
+     if (colCounter % 10 == 1) {
+       playColumn(CirclenotesArray, colCounter);
+     }
+     
+   }
+    
+  }
+  
+  
+  //print(CirclenotesArray[0].positionx);
+
+}
+
+
+void mouseDragged(){
+  
+ for (int i=0;i<100;i++){
+    if ((mouseX>CirclenotesArray[i].positionx-15)&&(mouseX<CirclenotesArray[i].positionx+15)&&((mouseY>CirclenotesArray[i].positiony-15)&&(mouseY<CirclenotesArray[i].positiony+15))){
+      if (mouseButton==LEFT){
+         CirclenotesArray[i].state=true;
+      }
+      else{
+         CirclenotesArray[i].state=false;
+      }
+    }
+  }
+}
+
+ void playColumn(circlenotes[] array, int num) {
+   if (array[num].state) {
+       note1.play();
+       note1.rewind();
+   }
+   
+   if(array[num + 10].state) {
+     note2.play();
+     note2.rewind();
+   }
+   
+   if (array[num + 20].state) {
+     note3.play();
+     note3.rewind();
+   }
+   
+   if (array[num + 30].state) {
+     note4.play();
+     note4.rewind();
+   }
+   
+   if (array[num + 40].state) {
+     note5.play();
+     note5.rewind();
+   }
+      
+   if (array[num + 50].state) {
+     note6.play();
+     note6.rewind();
+   }
+      
+   if (array[num + 60].state) {
+     note7.play();
+     note7.rewind();
+   }
+      
+   if (array[num + 70].state) {
+     note8.play();
+     note8.rewind();
+   }
+      
+   if (array[num + 80].state) {
+     note9.play();
+     note9.rewind();
+   }
+    
+   if (array[num + 90].state) {
+     note10.play();
+     note10.rewind();
+   } 
+   
+ }
+
+
+
+
+class circlenotes{
+  
+  boolean state=false;
+  float size=30;  
+  float positionx;
+  float positiony;
+
+  
+  
+  void makecircle(float positionnx,float positionny){
+  
+  //ellipse(width/5,height/5,30,30);
+  if (state==false){
+    fill(100);
+  }else{
+     fill(255);
+  }
+  
+  positionx=positionnx;
+  positiony=positionny;
+
+
+  ellipse(positionnx,positionny,size,size);
+ 
+  }
+}
